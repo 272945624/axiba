@@ -1,14 +1,19 @@
 package main
 
 import (
-	//"fmt"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 
-	. "model/database"
+	//"fmt"
+	"model/wxp"
 	"os"
 	_ "router"
 )
+
+var appID string = "wx2ad19cfcaba9984f"
+var appSecret string = "37e646b3a7ad514181bde49528873fcd"
+var domain string = "api.weixin.qq.com"
+var accessTokenURLFmt string = "https://%s/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s"
 
 func init() {
 	orm.RegisterDriver("mysql", orm.DRMySQL)
@@ -18,14 +23,11 @@ func init() {
 }
 
 func main() {
-	beego.Run()
-	user := new(UserAdmin)
 
-	user.UserName = "pppp"
-	user.Id = 2
+	wxp.Init(appID, appSecret, domain, accessTokenURLFmt)
+	wxp.WXPIns.AccessTokenIns.SetAccURLFmt(accessTokenURLFmt)
 
-	o := orm.NewOrm()
-	o.Using("default")
-	//	fmt.Println(user.Update(o, user, "user_name"))
-	o.QueryTable(user.TableName()).Filter("user_name", "guoheng2").Filter("id", 4).Delete()
+	go wxp.WXPIns.WatchDog()
+
+	beego.Run(":3000")
 }

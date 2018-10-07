@@ -6,5 +6,6 @@ import (
 )
 
 func init() {
-	beego.Router("/api/admin/user", &controllers.UserAdminController{})
+	beego.Router("/admin/user", &controllers.UserAdminController{})
+	beego.Router("/wx", &controllers.WeiXinPlatform{})
 }
